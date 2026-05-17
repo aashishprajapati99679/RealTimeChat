@@ -20,7 +20,9 @@ const Message = ({ message }) => {
                 </div>
             </div>
             <div className="chat-header">
-                <time className="text-xs opacity-50 text-white">12:45</time>
+                <time className="text-xs opacity-50 text-white">
+                    {message?.createdAt ? new Date(message.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Just now"}
+                </time>
             </div>
             <div className={`chat-bubble ${message?.senderId === authUser?._id ? "bg-green-300 text-black" : "bg-white text-black"}`}>
                 {message?.message}

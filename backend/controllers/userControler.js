@@ -1,7 +1,7 @@
 const { User } = require("../models/userModel");
+const Conversation = require("../models/conversationModel");
 const bcryptjs = require("bcryptjs");
 const JWT = require("jsonwebtoken");
-
 
 const register = async (req, res) => {
     try {
@@ -99,7 +99,9 @@ const login = async (req, res) => {
             _id: user._id,
             userName: user.userName,
             fullName: user.fullName,
-            profilePhoto: user.profilePhoto
+            profilePhoto: user.profilePhoto,
+            about: user.about,
+            phone: user.phone
         });
 
     } catch (error) {
@@ -127,9 +129,32 @@ const logout = async (req, res) => {
 const getOtherUsers = async (req, res) => {
     try {
         const loggedInUserId = req.id;
-        const otherUsers = await User.find({ _id: { $ne: loggedInUserId } }).select("-password")
+        const otherUsers = await User.find({ _id: { $ne: loggedInUserId } }).select("-password");
+
+        const usersWithConversations = await Promise.all(otherUsers.map(async (user) => {
+            const conversation = await Conversation.findOne({
+                participants: { $all: [loggedInUserId, user._id] }
+            }).populate("messages");
+
+            let lastMessage = null;
+            let unreadCount = 0;
+
+            if (conversation && conversation.messages.length > 0) {
+                lastMessage = conversation.messages[conversation.messages.length - 1];
+                unreadCount = conversation.messages.filter(
+                    msg => msg.senderId.toString() === user._id.toString() && !msg.isRead
+                ).length;
+            }
+
+            return {
+                ...user.toObject(),
+                lastMessage,
+                unreadCount
+            };
+        }));
+
         return res.status(200).json({
-            otherUsers,
+            otherUsers: usersWithConversations,
             success: true
         });
     } catch (error) {
@@ -139,4 +164,42 @@ const getOtherUsers = async (req, res) => {
         });
     }
 }
-module.exports = { register, login, logout, getOtherUsers };
+
+const updateProfile = async (req, res) => {
+    try {
+        const userId = req.id;
+        const { fullName, about, phone } = req.body;
+        let profilePhotoUrl = req.body.profilePhoto; // Default to body if string URL is provided
+
+        if (req.file) {
+            profilePhotoUrl = `http://localhost:8080/uploads/${req.file.filename}`;
+        }
+
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { fullName, about, phone, ...(profilePhotoUrl && { profilePhoto: profilePhotoUrl }) },
+            { new: true }
+        ).select("-password");
+
+        return res.status(200).json({
+            message: "Profile updated successfully",
+            success: true,
+            user: {
+                _id: updatedUser._id,
+                userName: updatedUser.userName,
+                fullName: updatedUser.fullName,
+                profilePhoto: updatedUser.profilePhoto,
+                about: updatedUser.about,
+                phone: updatedUser.phone
+            }
+        });
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            message: "Internal Server Error"
+        });
+    }
+}
+
+module.exports = { register, login, logout, getOtherUsers, updateProfile };

@@ -20,9 +20,30 @@ const userSlice = createSlice({
         },
         setOnlineUsers: (state, action) => {
             state.onlineUsers = action.payload;
+        },
+        updateUserConversation: (state, action) => {
+            const { userId, newMessage, incrementUnread } = action.payload;
+            const userIndex = state.otherUsers.findIndex(u => u._id === userId);
+            if (userIndex !== -1) {
+                state.otherUsers[userIndex].lastMessage = newMessage;
+                if (incrementUnread) {
+                    state.otherUsers[userIndex].unreadCount = (state.otherUsers[userIndex].unreadCount || 0) + 1;
+                }
+                
+                // Optional: Move the user to the top of the list
+                const [updatedUser] = state.otherUsers.splice(userIndex, 1);
+                state.otherUsers.unshift(updatedUser);
+            }
+        },
+        clearUnreadCount: (state, action) => {
+            const userId = action.payload;
+            const userIndex = state.otherUsers.findIndex(u => u._id === userId);
+            if (userIndex !== -1) {
+                state.otherUsers[userIndex].unreadCount = 0;
+            }
         }
     }
 })
 
-export const { setAuthUser, setOtherUsers, setSelectedUser, setOnlineUsers } = userSlice.actions;
+export const { setAuthUser, setOtherUsers, setSelectedUser, setOnlineUsers, updateUserConversation, clearUnreadCount } = userSlice.actions;
 export default userSlice.reducer;

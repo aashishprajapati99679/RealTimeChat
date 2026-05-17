@@ -1,10 +1,7 @@
 import React, { useState } from 'react'
 import { BiSearch } from "react-icons/bi"
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import toast from 'react-hot-toast';
-import { useSelector, useDispatch } from 'react-redux';
-import { setAuthUser, setOtherUsers } from '../redux/userSlice';
+import { useSelector } from 'react-redux';
 import OtherUsers from './OtherUsers';
 
 const Sidebar = () => {
@@ -12,28 +9,13 @@ const Sidebar = () => {
     const { otherUsers } = useSelector(store => store.user);
     const [search, setSearch] = useState("");
     const navigate = useNavigate();
-    const dispatch = useDispatch();
 
     const searchSubmitHandler = (e) => {
         e.preventDefault();
     }
 
-    const logoutHandler = async () => {
-        try {
-            axios.defaults.withCredentials = true;
-
-            const res = await axios.get(
-                "http://localhost:8080/api/v1/user/logout"
-            );
-
-            toast.success(res.data.message);
-            localStorage.removeItem("authUser");
-            navigate("/login");
-            dispatch(setAuthUser(null));
-        } catch (error) {
-            toast.error(error.message);
-            console.log(error);
-        }
+    const editProfileHandler = () => {
+        navigate("/edit");
     }
 
     return (
@@ -63,10 +45,10 @@ const Sidebar = () => {
 
             <div className='mt-2'>
                 <button
-                    onClick={logoutHandler}
+                    onClick={editProfileHandler}
                     className='btn btn-sm bg-sky-600 text-white hover:bg-sky-500'
                 >
-                    Logout
+                    Edit Profile
                 </button>
             </div>
         </div>

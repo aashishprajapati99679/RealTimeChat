@@ -8,7 +8,7 @@ import { useEffect } from "react";
 import { io } from "socket.io-client";
 import { setOnlineUsers } from "./redux/userSlice";
 import { setSocket } from "./redux/socketSlice";
-
+import EdithData from "./components/EdithData";
 
 const router = createBrowserRouter([
   {
@@ -25,6 +25,11 @@ const router = createBrowserRouter([
     path: "/login",
     element: <Login />
   },
+
+  {
+    path: "/edit",
+    element: <EdithData />
+  },
 ])
 
 
@@ -40,13 +45,13 @@ function App() {
       const socketio = io("http://localhost:8080", {
         query: { userId: authUser._id },
       });
-      
+
       dispatch(setSocket(socketio));
 
       socketio.on('getOnlineUsers', (onlineUsers) => {
         dispatch(setOnlineUsers(onlineUsers));
       });
-      
+
       return () => socketio.close();
     } else {
       if (socket) {

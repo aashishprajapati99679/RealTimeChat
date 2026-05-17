@@ -27,6 +27,16 @@ const userModel = new mongoose.Schema(
             type: String,
             enum: ["male", "female"],
             required: true
+        },
+
+        about: {
+            type: String,
+            default: "In search of happiness............"
+        },
+
+        phone: {
+            type: String,
+            default: ""
         }
     },
     { timestamps: true }

@@ -76,4 +76,21 @@ const getMessages = async (req, res) => {
     }
 };
 
-module.exports = { sendMessage, getMessages };
+const markAsRead = async (req, res) => {
+    try {
+        const senderId = req.params.id; // The person who sent the message
+        const receiverId = req.id;      // The logged in user who is reading it
+
+        await Message.updateMany(
+            { senderId, receiverId, isRead: { $ne: true } },
+            { $set: { isRead: true } }
+        );
+
+        return res.status(200).json({ success: true, message: "Messages marked as read" });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: "Internal Server Error" });
+    }
+}
+
+module.exports = { sendMessage, getMessages, markAsRead };

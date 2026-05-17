@@ -12,12 +12,9 @@ const cors = require("cors");
 
 
 
-const path = require("path");
-
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.json());
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 const corsOptions = {
     origin: true,
     credentials: true

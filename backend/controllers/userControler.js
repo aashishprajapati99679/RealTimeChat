@@ -172,7 +172,8 @@ const updateProfile = async (req, res) => {
         let profilePhotoUrl = req.body.profilePhoto; // Default to body if string URL is provided
 
         if (req.file) {
-            profilePhotoUrl = `http://localhost:8080/uploads/${req.file.filename}`;
+            const base64String = req.file.buffer.toString('base64');
+            profilePhotoUrl = `data:${req.file.mimetype};base64,${base64String}`;
         }
 
         const updatedUser = await User.findByIdAndUpdate(

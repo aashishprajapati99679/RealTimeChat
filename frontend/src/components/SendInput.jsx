@@ -16,13 +16,12 @@ const SendInput = () => {
 
         try {
             const res = await axios.post(
-                `http://localhost:8080/api/v1/message/send/${selectedUser?._id}`,
+                `/api/v1/message/send/${selectedUser?._id}`,
                 { message },
                 {
                     headers: {
                         "Content-Type": "application/json"
-                    },
-                    withCredentials: true
+                    }
                 }
             );
 

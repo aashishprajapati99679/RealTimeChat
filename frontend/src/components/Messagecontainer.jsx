@@ -15,8 +15,7 @@ const Messagecontainer = () => {
                 // Optimistically clear the unread count in the UI instantly
                 dispatch(clearUnreadCount(selectedUser._id));
                 try {
-                    axios.defaults.withCredentials = true;
-                    await axios.put(`http://localhost:8080/api/v1/message/mark-read/${selectedUser._id}`);
+                    await axios.put(`/api/v1/message/mark-read/${selectedUser._id}`);
                 } catch (error) {
                     console.log("Failed to mark messages as read:", error);
                 }

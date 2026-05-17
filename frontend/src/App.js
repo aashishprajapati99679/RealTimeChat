@@ -42,7 +42,8 @@ function App() {
 
   useEffect(() => {
     if (authUser) {
-      const socketio = io("http://localhost:8080", {
+      const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:8080";
+      const socketio = io(BASE_URL, {
         query: { userId: authUser._id },
       });
 

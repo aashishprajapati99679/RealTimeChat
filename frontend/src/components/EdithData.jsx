@@ -43,7 +43,7 @@ const EdithData = () => {
                 };
             }
 
-            const res = await axios.put(`http://localhost:8080/api/v1/user/update`, payload, { headers });
+            const res = await axios.put(`/api/v1/user/update`, payload, { headers });
             if (res.data.success) {
                 toast.success(res.data.message);
                 const updatedUser = res.data.user;
@@ -77,7 +77,7 @@ const EdithData = () => {
             axios.defaults.withCredentials = true;
 
             const res = await axios.get(
-                "http://localhost:8080/api/v1/user/logout"
+                "/api/v1/user/logout"
             );
 
             toast.success(res.data.message);

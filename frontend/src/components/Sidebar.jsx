@@ -1,12 +1,10 @@
 import React, { useState } from 'react'
 import { BiSearch } from "react-icons/bi"
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import OtherUsers from './OtherUsers';
 
 const Sidebar = () => {
 
-    const { otherUsers } = useSelector(store => store.user);
     const [search, setSearch] = useState("");
     const navigate = useNavigate();
 

@@ -60,6 +60,7 @@ function App() {
         dispatch(setSocket(null));
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authUser]);
 
   return (

@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, Navigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import axios from 'axios';
-
+import { useSelector } from 'react-redux';
 
 const Singup = () => {
   const navigate = useNavigate();
+  const { authUser } = useSelector(store => store.user);
 
   const [user, setUser] = useState(
     {
@@ -16,6 +17,9 @@ const Singup = () => {
       gender: ""
     }
   );
+
+  if (authUser) return <Navigate to="/" />;
+
   const handleSignup = async (e) => {
     e.preventDefault();
     try {

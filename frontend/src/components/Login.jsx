@@ -1,14 +1,15 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, Navigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import axios from 'axios';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setAuthUser } from '../redux/userSlice';
 
 
 
 const Login = () => {
     const navigate = useNavigate();
+    const { authUser } = useSelector(store => store.user);
 
     const [user, setUser] = useState(
         {
@@ -17,6 +18,9 @@ const Login = () => {
         }
     );
     const dispatch = useDispatch();
+    
+    if (authUser) return <Navigate to="/" />;
+
     const handleLogin = async (e) => {
         e.preventDefault();
         try {

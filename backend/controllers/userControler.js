@@ -95,7 +95,7 @@ const login = async (req, res) => {
         const token = await JWT.sign(tokendata, process.env.JWT_SECRET, {
             expiresIn: "1d"
         });
-        return res.status(200).cookie("token", token, { maxAge: 1 * 24 * 60 * 60 * 1000, httpOnly: true, sameSite: "strict" }).json({
+        return res.status(200).cookie("token", token, { maxAge: 1 * 24 * 60 * 60 * 1000, httpOnly: true, sameSite: "none", secure: true }).json({
             _id: user._id,
             userName: user.userName,
             fullName: user.fullName,
@@ -114,7 +114,7 @@ const login = async (req, res) => {
 
 const logout = async (req, res) => {
     try {
-        return res.status(200).cookie("token", "", { maxAge: 0, }).json({
+        return res.status(200).cookie("token", "", { maxAge: 0, httpOnly: true, sameSite: "none", secure: true }).json({
             message: "logged Out Successfully",
             success: true
         });
